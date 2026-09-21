@@ -26,10 +26,10 @@ def process_to_silver(bronze_file_path: str, silver_dir: str):
     # 1. Clean dates: convert to datetime, coercing errors to NaT
     df['date'] = pd.to_datetime(df['date'], format='mixed', dayfirst=True, errors='coerce')
     
-    # 2. Clean text casing - BUG INTRODUCED DELIBERATELY TO FAIL CI
-    df['city'] = df['city'].str.lower()
-    
-
+    # 2. Clean text casing
+    df['city'] = df['city'].str.title().str.strip()
+    # Normalize 'Sao Paulo' vs 'São Paulo'
+    df['city'] = df['city'].replace({'Sao Paulo': 'São Paulo'})
     df['category'] = df['category'].str.title().str.strip()
     
     # 3. Clean unit_price: remove currency symbols and convert to float
